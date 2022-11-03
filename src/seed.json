@@ -1,0 +1,34 @@
+{
+  "ideas": [
+    {
+      "id": 1,
+      "name": "Primera idea",
+      "username": "Usuario 1",
+      "votes": 99
+    },
+    {
+      "id": 2,
+      "name": "Segunda idea",
+      "username": "Usuario 2",
+      "votes": 99
+    },
+    {
+      "id": 3,
+      "name": "Tercera idea",
+      "username": "Usuario 3",
+      "votes": 99
+    },
+    {
+      "id": 4,
+      "name": "Cuarta idea",
+      "username": "Usuario 4",
+      "votes": 99
+    },
+    {
+      "id": 5,
+      "name": "Quinta idea",
+      "username": "Usuario 5",
+      "votes": 99
+    }
+  ]
+}
