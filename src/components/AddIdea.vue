@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { User } from "@firebase/auth";
-import { ref } from "vue";
+import { ref } from 'vue'
+import { AuthUser } from '../interfaces/types'
 
 defineProps<{
-  user: User | null;
-}>();
+  user: AuthUser | null
+}>()
 
-const idea = ref("");
+const idea = ref('')
 
-const emit = defineEmits(["doLogin", "doLogout", "addIdea"]);
+const emit = defineEmits(['doLogin', 'doLogout', 'addIdea'])
 
-const doLogin = () => emit("doLogin");
+const doLogin = () => emit('doLogin')
 
-const doLogout = () => emit("doLogout");
+const doLogout = () => emit('doLogout')
 
 const addIdea = () => {
-  emit("addIdea", idea);
-  idea.value = "";
-};
+  emit('addIdea', idea)
+  idea.value = ''
+}
 </script>
 
 <template>
@@ -52,6 +52,7 @@ const addIdea = () => {
 .user-actions {
   @apply mt-2 text-center;
 }
+
 .user-actions a {
   @apply font-bold underline;
 }
