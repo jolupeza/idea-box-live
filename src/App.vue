@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, defineAsyncComponent } from 'vue'
 import type { Ref } from 'vue'
 
 import { Idea, AuthUser } from './interfaces/types'
@@ -24,6 +24,7 @@ import {
   setDoc,
   arrayUnion,
   getDoc,
+  deleteDoc,
 } from '@firebase/firestore'
 
 import AddIdea from './components/AddIdea.vue'
@@ -31,6 +32,11 @@ import AppIdea from './components/AppIdea.vue'
 
 const ideas: Ref<Array<Idea>> = ref([])
 const authUser: Ref<AuthUser | null> = ref(null)
+const isModalActive: Ref<Boolean> = ref(false)
+
+const RemoveIdea = defineAsyncComponent(
+  () => import('./components/RemoveIdea.vue')
+)
 
 const provider = new GoogleAuthProvider()
 
@@ -148,10 +154,49 @@ const voteIdea = async ({ id, type }: PropsVoteIdea): Promise<void> => {
     console.error(error)
   }
 }
+
+type PropsIdeaToRemove = {
+  id: string | null
+  name: string | null
+}
+
+const ideaToRemove: PropsIdeaToRemove = { id: null, name: null }
+
+const showRemoveIdeaModal = ({ name, id }: PropsIdeaToRemove) => {
+  ideaToRemove.id = id
+  ideaToRemove.name = name
+  isModalActive.value = true
+}
+
+const removeIdea = async () => {
+  if (ideaToRemove.id === null) {
+    isModalActive.value = false
+    return
+  }
+
+  try {
+    await deleteDoc(doc(db, 'ideas', ideaToRemove.id))
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isModalActive.value = false
+    ideaToRemove.id = null
+    ideaToRemove.name = null
+  }
+}
 </script>
 
 <template>
   <div class="container p-4 mx-auto">
+    <Teleport to="body">
+      <RemoveIdea
+        v-if="isModalActive"
+        :name="ideaToRemove.name"
+        @remove-ok="removeIdea"
+        @remove-cancel="isModalActive = !isModalActive"
+      />
+    </Teleport>
+
     <div class="w-full bg-gray-100 shadow-lg p-4 rounded-lg">
       <h1 class="mb-5 text-4xl text-center">IdeaBox</h1>
 
@@ -169,6 +214,7 @@ const voteIdea = async ({ id, type }: PropsVoteIdea): Promise<void> => {
           :idea="idea"
           :user="authUser"
           @vote-idea="voteIdea"
+          @remove-idea="showRemoveIdeaModal"
           class="idea"
         />
       </TransitionGroup>

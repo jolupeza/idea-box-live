@@ -10,10 +10,13 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits(['voteIdea'])
+const emit = defineEmits(['voteIdea', 'removeIdea'])
 
 const voteIdea = (type: boolean) =>
   emit('voteIdea', { id: props.idea.id, type })
+
+const removeIdea = () =>
+  emit('removeIdea', { id: props.idea.id, name: props.idea.name })
 
 const userVoted = computed(() => {
   if (props.user?.votes) {
@@ -22,10 +25,21 @@ const userVoted = computed(() => {
 
   return false
 })
+
+const userIdea = computed(
+  () => props.user && props.user.uid === props.idea.user
+)
 </script>
 
 <template>
   <article class="p-3 mt-4 rounded-lg md:flex md:items-center">
+    <img
+      v-if="userIdea"
+      @click="removeIdea"
+      class="mr-3 cursor-pointer w-8"
+      src="./../assets/images/delete.svg"
+      alt="Delete idea"
+    />
     <section class="text-center md:flex-1 md:text-left">
       <h2 class="text-xl md:text-2xl md:leading-6">
         {{ idea.name }}
