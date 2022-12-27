@@ -6,6 +6,7 @@ export interface Idea {
   user: string
   userName: string
   votes: number
+  createdAt: number
 }
 
 export interface AuthUser extends User {

@@ -25,7 +25,7 @@ const userVoted = computed(() => {
 </script>
 
 <template>
-  <article class="p-3 mt-4 rounded-lg bg-gray-300 md:flex md:items-center">
+  <article class="p-3 mt-4 rounded-lg md:flex md:items-center">
     <section class="text-center md:flex-1 md:text-left">
       <h2 class="text-xl md:text-2xl md:leading-6">
         {{ idea.name }}

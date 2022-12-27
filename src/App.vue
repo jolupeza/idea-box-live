@@ -63,7 +63,7 @@ onSnapshot(
     const newIdeas: Array<Idea> = []
 
     querySnapshot.forEach((doc) => {
-      const { name, user, userName, votes } = doc.data()
+      const { name, user, userName, votes, createdAt } = doc.data()
       const id = doc.id
 
       newIdeas.push({
@@ -72,6 +72,7 @@ onSnapshot(
         user,
         userName,
         votes,
+        createdAt,
       })
 
       ideas.value = newIdeas
@@ -102,6 +103,7 @@ const addIdea = async (data: Ref) => {
       name: data.value,
       user: authUser.value?.uid,
       userName: authUser.value?.displayName,
+      createdAt: Date.now(),
       votes: 0,
     })
   } catch (error) {
@@ -160,13 +162,49 @@ const voteIdea = async ({ id, type }: PropsVoteIdea): Promise<void> => {
         @add-idea="addIdea"
       />
 
-      <AppIdea
-        v-for="idea in ideas"
-        :key="idea.id"
-        :idea="idea"
-        :user="authUser"
-        @vote-idea="voteIdea"
-      />
+      <TransitionGroup name="list-complete">
+        <AppIdea
+          v-for="idea in ideas"
+          :key="idea.createdAt"
+          :idea="idea"
+          :user="authUser"
+          @vote-idea="voteIdea"
+          class="idea"
+        />
+      </TransitionGroup>
     </div>
   </div>
 </template>
+
+<style>
+.idea {
+  @apply bg-gray-200;
+  transition: all 0.8s ease;
+}
+.idea:nth-of-type(1) {
+  @apply bg-red-500;
+}
+.idea:nth-of-type(2) {
+  @apply bg-red-400;
+}
+.idea:nth-of-type(3) {
+  @apply bg-red-300;
+}
+.idea:nth-of-type(4) {
+  @apply bg-red-200;
+}
+.idea:nth-of-type(5) {
+  @apply bg-red-100;
+}
+.list-complete-enter-from,
+.list-complete-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.list-complete-leave-active {
+  position: absolute;
+}
+.list-complete-move {
+  transition: transform 0.3s ease;
+}
+</style>
